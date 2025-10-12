@@ -5,7 +5,7 @@ A library for writing log priority levels to stdout for systemd's journal.
 ## Installation
 
 ```
-go get github.com/bwpge/systemdlog@latest
+go get -u github.com/bwpge/systemdlog@latest
 ```
 
 ## Usage
@@ -16,16 +16,18 @@ Example program:
 package main
 
 import (
-	log "github.com/bwpge/systemdlog"
+    sdlog "github.com/bwpge/systemdlog"
 )
 
 func main() {
-	log.Infof("hello, world")
+    sdlog.Info("Hello, world!")
+    sdlog.Warnf("This is a warning: %d is %s", 42, "the answer")
 }
 ```
 
 Output:
 
 ```
-<6>hello, world
+<6>Hello, world!
+<4>This is a warning: 42 is the answer
 ```
