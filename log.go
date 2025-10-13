@@ -13,6 +13,11 @@ var (
 	ctx    context.Context
 )
 
+func init() {
+	ctx = context.Background()
+	SetLogLevel(LevelDebug)
+}
+
 // Emergencyf logs a formatted message with the 'emerg' (0) priority level.
 //
 // Description: System is unusable
@@ -150,17 +155,23 @@ func Log(level PriorityLevel, msg string, v ...any) {
 	logger.Log(ctx, level.Level(), msg, v...)
 }
 
-func logf(l slog.Leveler, f string, v ...any) {
-	logger.Log(ctx, l.Level(), fmt.Sprintf(f, v...))
-}
-
-func logln(l slog.Leveler, v ...any) {
-	logger.Log(ctx, l.Level(), fmt.Sprint(v...))
-}
-
-func init() {
-	ctx = context.Background()
-	opts := slog.HandlerOptions{Level: slog.LevelDebug}
+func SetLogLevel(level PriorityLevel) {
+	opts := slog.HandlerOptions{Level: level}
 	handler := NewSystemdHandler(os.Stdout, opts)
 	logger = slog.New(handler)
+}
+
+// SetLevelToStringFunc sets the function called by PriorityLevel.String().
+// Useful for changing the level output style at runtime with e.g., based on a
+// command line option.
+func SetLevelToStringFunc(f func(PriorityLevel) string) {
+	priorityLevelToString = f
+}
+
+func logln(level slog.Leveler, v ...any) {
+	logger.Log(ctx, level.Level(), fmt.Sprint(v...))
+}
+
+func logf(level slog.Leveler, f string, v ...any) {
+	logger.Log(ctx, level.Level(), fmt.Sprintf(f, v...))
 }

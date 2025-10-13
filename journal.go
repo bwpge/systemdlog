@@ -19,6 +19,10 @@ const (
 	LevelDebug
 )
 
+var priorityLevelToString = func(p PriorityLevel) string {
+	return fmt.Sprintf("<%d>", p)
+}
+
 func (p PriorityLevel) Level() slog.Level {
 	// need to reverse the mapping to match slog style levels. this maps
 	// similar to slog levels where default is info and debug is negative
@@ -31,5 +35,5 @@ func priorityFromSlog(l slog.Level) PriorityLevel {
 }
 
 func (p PriorityLevel) String() string {
-	return fmt.Sprintf("<%d>", p)
+	return priorityLevelToString(p)
 }
